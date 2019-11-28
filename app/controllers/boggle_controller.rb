@@ -1,0 +1,2 @@
+class BoggleController < ApplicationController
+end
