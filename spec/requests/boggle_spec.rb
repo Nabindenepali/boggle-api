@@ -10,10 +10,18 @@ RSpec.describe 'Boggle API', type: :request do
   describe 'GET /boggle/new-game' do
     before { get '/boggle/new-game' }
 
-    it 'returns a single board of size 4X4' do
+    it 'returns a board as json object' do
       expect(json).not_to be_empty
-      expect(json['board'].size).to eq(4)
-      expect(json['board'][0].size).to eq(4)
+    end
+
+    it 'returns the id of the board as board_id' do
+      expect(json['board_id']).not_to be_nil
+    end
+
+    it 'returns a board of size 4X4' do
+      expect(json['board']).not_to be_nil
+      expect(JSON(json['board']).size).to eq(4)
+      expect(JSON(json['board'])[0].size).to eq(4)
     end
 
     it 'returns status code 200' do
@@ -21,9 +29,9 @@ RSpec.describe 'Boggle API', type: :request do
     end
   end
 
-  # Test suite for GET /boggle/submit-word/:board_id/:word
-  describe 'GET /boggle/submit-word/:board_id/:word' do
-    before { get "/boggle/submit-word/#{board_id}/#{word}" }
+  # Test suite for GET /boggle/:board_id/submit-word/:word
+  describe 'GET /boggle/:board_id/submit-word/:word' do
+    before { get "/boggle/#{board_id}/submit-word/#{word}" }
 
     context 'when the board exists' do
       context 'when the word specified is a valid word' do
@@ -42,12 +50,24 @@ RSpec.describe 'Boggle API', type: :request do
           let(:word) { 'ANOTHER' }
 
           it 'returns a word cannot be made from the board message' do
-            expect(response.body).to match(/The given word can't be made from the letters in the board/)
+            expect(response.body).to match(/The submitted word cannot made using the letters in the current board/)
           end
 
           it 'returns status code 400' do
-            expect(response).to have_http_status(422)
+            expect(response).to have_http_status(400)
           end
+        end
+      end
+
+      context 'when the word specified is less than 3 characters' do
+        let(:word) { 'BE' }
+
+        it 'returns a word too short message' do
+          expect(response.body).to match(/The submitted word needs to have at least 3 characters/)
+        end
+
+        it 'returns status code 400' do
+          expect(response).to have_http_status(400)
         end
       end
 
@@ -55,7 +75,7 @@ RSpec.describe 'Boggle API', type: :request do
         let(:word) { 'BAMBINO' }
 
         it 'returns a word not found message' do
-          expect(response.body).to match(/The given word wasn't found in our dictionary/)
+          expect(response.body).to match(/The submitted word is not a valid word/)
         end
 
         it 'returns status code 400' do
@@ -68,7 +88,7 @@ RSpec.describe 'Boggle API', type: :request do
       let(:board_id) { 100 }
 
       it 'returns a not found message' do
-        expect(response.body).to match(/The board with given id doesn't exist/)
+        expect(response.body).to match(/Couldn't find Board/)
       end
 
       it 'returns status code 404' do

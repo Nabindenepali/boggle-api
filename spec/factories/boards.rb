@@ -1,7 +1,10 @@
 FactoryBot.define do
   factory :board do
     rows { 4 }
-    sequence(:dices) { |n| get_dices_for_board(n) }
+    # The value of n gets incremented every time a new board is generated.
+    # However, we only have the array for 5 boards.
+    # So we perform a modulo by 5.
+    sequence(:dices) { |n| get_dices_for_board((n-1) % 5) }
   end
 end
 
@@ -39,5 +42,5 @@ def get_dices_for_board(index)
       %w(L D H C)
     ]
   ]
-  return dices[index]
+  dices[index]
 end
