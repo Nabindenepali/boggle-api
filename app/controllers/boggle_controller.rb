@@ -38,6 +38,8 @@ class BoggleController < ApplicationController
 
   # try to make specified word with given letters starting from the specified position
   def make_word_from_board?(letters, word, i, j)
+    letter_used = letters.map {|column| column.map { false }}
+    letter_used[i][j] = true
     word_pos = 1
     while word_pos < word.size
       letter_matched = false
@@ -48,8 +50,10 @@ class BoggleController < ApplicationController
           next
         end
         (j-1..j+1).each do |n|
-          # ignore if our matching window is outside the dices and also for the current dice
-          if n == -1 || n == letters[0].size || (m == i && n == j)
+          # ignore if our matching window is outside the dices
+          # ignore for the current dice
+          # ignore if letter at the position has already been used
+          if n == -1 || n == letters[0].size || (m == i && n == j) || letter_used[m][n]
             next
           end
           if letters[m][n] == word[word_pos]
@@ -57,6 +61,7 @@ class BoggleController < ApplicationController
             i = m
             j = n
             letter_matched = true
+            letter_used[i][j] = true
             break
           end
         end
