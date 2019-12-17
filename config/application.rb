@@ -36,5 +36,16 @@ module BoggleApi
 
     # Autoload paths for exceptions
     config.autoload_paths += %W(#{config.root}/lib/exceptions)
+
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins 'localhost:3000'
+        resource(
+            '*',
+            headers: :any,
+            methods: [:get, :patch, :put, :delete, :post, :options]
+        )
+      end
+    end
   end
 end
