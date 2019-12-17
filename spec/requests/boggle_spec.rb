@@ -4,7 +4,7 @@ RSpec.describe 'Boggle API', type: :request do
   # initialize test data for boards
   let!(:boards) { create_list(:board, 5) }
   let(:board_id) { boards.first.id }
-  let(:word) { 'TRACK' }
+  let(:word) { 'DENT' }
 
   # Test suite for GET /boggle/new-game
   describe 'GET /boggle/new-game' do
@@ -38,7 +38,7 @@ RSpec.describe 'Boggle API', type: :request do
         context 'when the word can be made from letters in the board' do
           it 'returns the score for the word' do
             expect(json).not_to be_empty
-            expect(json['score']).to eq(2) # Boggle scores 2 for 5-letter words
+            expect(json['score']).to eq(1) # Boggle scores 1 for 4-letter words
           end
 
           it 'returns status code 200' do
