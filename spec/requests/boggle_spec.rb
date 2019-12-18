@@ -38,7 +38,7 @@ RSpec.describe 'Boggle API', type: :request do
         context 'when the word can be made from letters in the board' do
           it 'returns the score for the word' do
             expect(json).not_to be_empty
-            expect(json['score']).to eq(1) # Boggle scores 1 for 4-letter words
+            expect(json['score']).to eq(4) # Boggle scores 4 for 4-letter words
           end
 
           it 'returns status code 200' do

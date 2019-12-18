@@ -100,22 +100,6 @@ class BoggleController < ApplicationController
 
   # get boggle scores based on word length
   def get_score_for_word(word)
-    if word.length < 3
-      return 0
-    end
-    case word.length
-    when 3
-      return 1
-    when 4
-      return 1
-    when 5
-      return 2
-    when 6
-      return 3
-    when 7
-      return 5
-    else
-      return 11
-    end
+    word.length >= 3 ? word.length : 0
   end
 end
